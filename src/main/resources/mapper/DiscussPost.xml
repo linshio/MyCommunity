@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linshio.community.dao.DiscussPostMapper">
+
+    <!--java字段与数据库字段的映射-->
+    <resultMap id="discussPost" type="cn.linshio.community.entity.DiscussPost">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="comment_count" property="commentCount"/>
+    </resultMap>
+
+    <select id="selectDiscussPosts" resultMap="discussPost">
+        select *
+        from discuss_post
+        <where>
+            status != 2
+            <if test="userId!=0">
+                and user_id = #{userId}
+            </if>
+            order by type desc , create_time desc
+            limit #{offset}, #{limit}
+        </where>
+    </select>
+
+    <select id="selectDiscussPostRows" resultType="int">
+        select count(id)
+        from discuss_post
+        where status != 2
+        <if test="userId!=0">
+            and user_id = #{userId}
+        </if>
+    </select>
+</mapper>

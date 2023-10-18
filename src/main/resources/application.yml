@@ -1,0 +1,31 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /community
+
+# 数据源的配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://60.204.128.243:3306/community?characterEncoding=utf-8&useSSL=false&serverTimezone=Hongkong
+    username: root
+    password: LingXi666
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      maximum-pool-size: 15
+      minimum-idle: 5
+      idle-timeout: 30000
+# mybatis 配置
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: cn.linshio.community.entity
+  configuration:
+    use-generated-keys: true
+    map-underscore-to-camel-case: true
+
+
+# 设置日志级别
+logging:
+  level:
+    cn.linshio.community: debug
+
