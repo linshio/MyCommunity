@@ -12,6 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -39,17 +40,21 @@ public class MapperTests {
 
     @Test
     public void testUserMapper(){
-//        User testUser = new User(null, "test", "test", "tt", "jb@qq.com", 0, 0, null, "http://www.bilibili.com", new Date());
+        User testUser = new User(null, "test", "test", "tt", "jb@qq.com", 0, 0, null, "http://www.bilibili.com", new Date());
 //        int result = userMapper.insertUser(testUser);
 //        log.info("插入「{}」条数据",result);
 //        User user = userMapper.selectUserById(150);
 //        User user = userMapper.selectUserByEmail("jb@qq.com");
-        int updateUserPassword = userMapper.updateUserPassword(150, "666666");
-        int updateUserStatus = userMapper.updateUserStatus(150, 1);
-        int updateUserHeadUrl = userMapper.updateUserHeadUrl(150, "http://linshio.cn");
-        User user = userMapper.selectUserByName("test");
-        log.info(user.toString()+"\n"+"updateUserPassword=>{} ,updateUserStatus=>{} ,updateUserHeadUrl=>{}",
-                updateUserPassword,updateUserStatus,updateUserHeadUrl);
+//        int updateUserPassword = userMapper.updateUserPassword(150, "666666");
+//        int updateUserStatus = userMapper.updateUserStatus(150, 1);
+//        int updateUserHeadUrl = userMapper.updateUserHeadUrl(150, "http://linshio.cn");
+//        User user = userMapper.selectUserByName("test");
+//        log.info(user.toString()+"\n"+"updateUserPassword=>{} ,updateUserStatus=>{} ,updateUserHeadUrl=>{}",
+//                updateUserPassword,updateUserStatus,updateUserHeadUrl);
+        userMapper.insertUser(testUser);
+//        User user = userMapper.selectUserByName(testUser.getUsername());
+        log.info(String.valueOf(testUser.getId()));
+
     }
 
 }

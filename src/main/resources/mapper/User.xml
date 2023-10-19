@@ -34,7 +34,7 @@
         where email = #{email};
     </select>
 
-    <insert id="insertUser" parameterType="cn.linshio.community.entity.User">
+    <insert id="insertUser" parameterType="cn.linshio.community.entity.User" keyProperty="id">
         insert into user (username, password, salt, email, type, status, activation_code, header_url, create_time)
         values (#{username},#{password},#{salt},#{email},#{type},#{status},#{activationCode},#{headerUrl},#{createTime});
     </insert>

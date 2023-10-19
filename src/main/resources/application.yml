@@ -15,6 +15,15 @@ spring:
       maximum-pool-size: 15
       minimum-idle: 5
       idle-timeout: 30000
+  # 邮箱配置
+  mail:
+    host: smtp.qq.com
+    port: 465
+    username: relifeme@qq.com
+    password: ptkepfarlhkhdahe
+    protocol: smtps
+    properties:
+      mail-smtp-ssl-enable: true
 # mybatis 配置
 mybatis:
   mapper-locations: classpath:mapper/*.xml
@@ -23,9 +32,14 @@ mybatis:
     use-generated-keys: true
     map-underscore-to-camel-case: true
 
-
 # 设置日志级别
 logging:
   level:
     cn.linshio.community: debug
 
+
+
+# 自定义配置内容
+community:
+  path:
+    domain: http://localhost:8080
