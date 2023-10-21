@@ -15,15 +15,20 @@ spring:
       maximum-pool-size: 15
       minimum-idle: 5
       idle-timeout: 30000
+
   # 邮箱配置
   mail:
     host: smtp.qq.com
     port: 465
     username: relifeme@qq.com
+    # todo ：记得完成项目的时候关闭smtp
     password: ptkepfarlhkhdahe
     protocol: smtps
     properties:
       mail-smtp-ssl-enable: true
+  # 关闭thymeleaf缓存 todo:打包上线记得开启
+  thymeleaf:
+    cache: false
 # mybatis 配置
 mybatis:
   mapper-locations: classpath:mapper/*.xml
@@ -38,8 +43,10 @@ logging:
     cn.linshio.community: debug
 
 
-
 # 自定义配置内容
 community:
   path:
+    # 主机域名
     domain: http://localhost:8080
+    # 文件上传的路径
+    upload: /Users/linshio/Project/EustiaJava/community/src/main/resources/userHeaderImg

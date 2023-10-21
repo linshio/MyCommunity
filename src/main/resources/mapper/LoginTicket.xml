@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linshio.community.dao.LoginTicketMapper">
+
+    <!--java字段与数据库字段的映射-->
+    <resultMap id="ticketMap" type="cn.linshio.community.entity.LoginTicket">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+    </resultMap>
+
+    <insert id="insertLoginTicket" parameterType="cn.linshio.community.entity.LoginTicket" keyProperty="id">
+        insert into login_ticket (user_id, ticket, status, expired)
+        values (#{userId},#{ticket},#{status},#{expired});
+    </insert>
+
+    <select id="selectLoginTicketByTicket" resultMap="ticketMap">
+        select *
+        from login_ticket
+        where ticket = #{ticket};
+    </select>
+
+    <update id="updateTicketStatus">
+        update login_ticket
+        set status = #{status}
+        where ticket = #{ticket};
+    </update>
+</mapper>

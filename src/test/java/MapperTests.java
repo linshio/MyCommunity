@@ -1,7 +1,9 @@
 import cn.linshio.community.MainApplication;
 import cn.linshio.community.dao.DiscussPostMapper;
+import cn.linshio.community.dao.LoginTicketMapper;
 import cn.linshio.community.dao.UserMapper;
 import cn.linshio.community.entity.DiscussPost;
+import cn.linshio.community.entity.LoginTicket;
 import cn.linshio.community.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -26,6 +28,9 @@ public class MapperTests {
 
     @Resource
     private UserMapper userMapper;
+
+    @Resource
+    private LoginTicketMapper loginTicketMapper;
 
     @Test
     public void testSelectPost(){
@@ -57,4 +62,13 @@ public class MapperTests {
 
     }
 
+    @Test
+    public void testTicketMapper(){
+//        LoginTicket loginTicket = new LoginTicket(null,101,"az",0,
+//                new Date(System.currentTimeMillis()+1000*60*60));//时间为一个小时
+//        loginTicketMapper.insertLoginTicket(loginTicket);
+        loginTicketMapper.updateTicketStatus("az",1);
+        LoginTicket loginTicket = loginTicketMapper.selectLoginTicketByTicket("az");
+        log.info(loginTicket.toString());
+    }
 }
