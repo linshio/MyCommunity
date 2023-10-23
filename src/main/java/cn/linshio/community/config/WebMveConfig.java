@@ -8,6 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.annotation.Resource;
 
+//WebMveConfig配置类
 @Configuration
 public class WebMveConfig implements WebMvcConfigurer {
 

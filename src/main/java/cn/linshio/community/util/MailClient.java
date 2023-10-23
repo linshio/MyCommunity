@@ -1,5 +1,6 @@
 package cn.linshio.community.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,11 +14,8 @@ import javax.mail.internet.MimeMessage;
 
 //使用邮箱注册工具
 @Component
+@Slf4j
 public class MailClient {
-
-    public static final Logger LOGGER = LoggerFactory.getLogger(MailClient.class);
-
-
     //发送方邮件名
     @Value("${spring.mail.username}")
     private String from;
@@ -46,7 +44,7 @@ public class MailClient {
             //发送邮件
             sender.send(helper.getMimeMessage());
         } catch (MessagingException e) {
-            LOGGER.error("发送邮件失败==>"+e.getMessage());
+            log.error("发送邮件失败==>"+e.getMessage());
         }
     }
 

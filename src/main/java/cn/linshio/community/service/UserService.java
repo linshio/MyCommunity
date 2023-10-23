@@ -44,7 +44,7 @@ public class UserService implements CommunityConstant {
     private String domain;
 
     //查询用户
-    public User selectUserById(Integer id){
+    public User selectUserById(int id){
         return userMapper.selectUserById(id);
     }
 
@@ -56,8 +56,8 @@ public class UserService implements CommunityConstant {
 
     /**
      * 用户注册
-     * @param user
-     * @return
+     * @param user 用户对象
+     * @return map集合收集的错误信息
      */
     public Map<Object,Object> register(User user){
         HashMap<Object, Object> map = new HashMap<>();
@@ -107,19 +107,16 @@ public class UserService implements CommunityConstant {
         Context context = new Context();
         context.setVariable("email",user.getEmail());
         //http://localhost:8080/community/activation/101/code
-        log.info("user ===>"+user.toString());
         //根据用户生成激活链接
         String url = domain + contextPath + "/activation/" + user.getId() + "/" +user.getActivationCode();
-
         context.setVariable("url",url);
         String process = templateEngine.process("/mail/activation", context);
         mailClient.sendMail(user.getEmail(), "激活账号",process);
-
         return map;
     }
 
     //激活码的业务方法
-    public int activation(Integer userId,String code){
+    public int activation(int userId,String code){
         //从数据库中获取
         User user = userMapper.selectUserById(userId);
         if (user!=null && user.getStatus()==1){
@@ -134,12 +131,12 @@ public class UserService implements CommunityConstant {
 
     /**
      * 用户登录
-     * @param username
-     * @param password
+     * @param username 账户名
+     * @param password 账户密码
      * @param expiredTime : 过期时间 单位S
-     * @return
+     * @return map集合收集的错误信息
      */
-    public Map<String,Object> login(String username,String password,Integer expiredTime){
+    public Map<String,Object> login(String username,String password,int expiredTime){
         Map<String,Object> map = new HashMap<>();
         //判空
         if (StringUtils.isBlank(username)){
@@ -172,7 +169,7 @@ public class UserService implements CommunityConstant {
         loginTicket.setUserId(user.getId());
         loginTicket.setStatus(0);
         loginTicket.setTicket(CommunityUtil.getRandomUUID());
-        loginTicket.setExpired(new Date(System.currentTimeMillis()+expiredTime*1000));
+        loginTicket.setExpired(new Date(System.currentTimeMillis()+expiredTime* 1000L));
         //将凭证插入到数据库中
         loginTicketMapper.insertLoginTicket(loginTicket);
         //将登录的凭证放入到map中
@@ -195,7 +192,7 @@ public class UserService implements CommunityConstant {
      * @param headerUrl 用户头像url
      * @return
      */
-    public int updateHeaderUrl(Integer userId,String headerUrl){
+    public int updateHeaderUrl(int userId,String headerUrl){
         return userMapper.updateUserHeadUrl(userId,headerUrl);
     }
 

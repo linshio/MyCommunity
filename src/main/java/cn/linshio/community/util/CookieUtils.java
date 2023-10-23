@@ -5,9 +5,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 public class CookieUtils {
-    public static String getCookieValue(HttpServletRequest request,String name) throws IllegalAccessException {
+    public static String getCookieValue(HttpServletRequest request,String name)  {
         if (request==null || name==null){
-            throw new IllegalAccessException("参数为空!");
+            throw new IllegalArgumentException("参数为空!");
         }
         Cookie[] cookies = request.getCookies();
         if (cookies!=null){

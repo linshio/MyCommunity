@@ -45,7 +45,7 @@ public class MapperTests {
 
     @Test
     public void testUserMapper(){
-        User testUser = new User(null, "test", "test", "tt", "jb@qq.com", 0, 0, null, "http://www.bilibili.com", new Date());
+//        User testUser = new User("test", "test", "tt", "jb@qq.com", 0, 0, null, "http://www.bilibili.com", new Date());
 //        int result = userMapper.insertUser(testUser);
 //        log.info("插入「{}」条数据",result);
 //        User user = userMapper.selectUserById(150);
@@ -56,9 +56,9 @@ public class MapperTests {
 //        User user = userMapper.selectUserByName("test");
 //        log.info(user.toString()+"\n"+"updateUserPassword=>{} ,updateUserStatus=>{} ,updateUserHeadUrl=>{}",
 //                updateUserPassword,updateUserStatus,updateUserHeadUrl);
-        userMapper.insertUser(testUser);
+//        userMapper.insertUser(testUser);
 //        User user = userMapper.selectUserByName(testUser.getUsername());
-        log.info(String.valueOf(testUser.getId()));
+//        log.info(String.valueOf(testUser.getId()));
 
     }
 

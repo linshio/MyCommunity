@@ -13,5 +13,5 @@ public interface LoginTicketMapper {
     LoginTicket selectLoginTicketByTicket(String ticket);
     //更新凭证状态
     int updateTicketStatus(@Param("ticket") String ticket,
-                           @Param("status") Integer status);
+                           @Param("status") int status);
 }

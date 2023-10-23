@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface UserMapper {
     //根据用户id 查询用户
-    User selectUserById(@Param("id") Integer id);
+    User selectUserById(@Param("id") int id);
     //根据用户名 查询用户
     User selectUserByName(@Param("username") String username);
     //根据邮箱   查询用户
@@ -17,12 +17,12 @@ public interface UserMapper {
     int insertUser(User user);
 
     //更新用户的状态  status
-    int updateUserStatus(@Param("id") Integer id,
-                         @Param("status") Integer status);
+    int updateUserStatus(@Param("id") int id,
+                         @Param("status") int status);
     //更新用户的头像链接
-    int updateUserHeadUrl(@Param("id") Integer id,
+    int updateUserHeadUrl(@Param("id") int id,
                           @Param("headUrl") String headerUrl);
     //更新用户密码
-    int updateUserPassword(@Param("id") Integer id,
+    int updateUserPassword(@Param("id") int id,
                            @Param("password") String password);
 }

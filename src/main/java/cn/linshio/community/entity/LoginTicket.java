@@ -11,9 +11,9 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginTicket {
-    private Integer id; //登录id
-    private Integer userId; // 用户id
+    private int id; //登录id
+    private int userId; // 用户id
     private String ticket; // 凭证信息 核心数据
-    private Integer status;//0-有效; 1-无效
+    private int status;//0-有效; 1-无效
     private Date expired; //登录的有效时间
 }

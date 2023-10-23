@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linshio.community.dao.CommentMapper">
+
+    <!--java字段与数据库字段的映射-->
+    <resultMap id="comment" type="cn.linshio.community.entity.Comment">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="entity_type" property="entityType"/>
+        <result column="entity_id" property="entityId"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <select id="selectCommentByEntity" resultMap="comment">
+        select *
+        from comment
+        where status = 0
+        and entity_id = #{entityId}
+        and entity_type = #{entityType}
+        order by create_time asc
+        limit #{offset}, #{limit}
+    </select>
+
+    <select id="selectCommentCount" resultType="int">
+        select count(id)
+        from comment
+        where status = 0
+          and entity_id = #{entityId}
+          and entity_type = #{entityType}
+    </select>
+
+    <insert id="insertComment" parameterType="cn.linshio.community.entity.Comment" keyProperty="id">
+        insert into comment (user_id, entity_type, entity_id, target_id, content, status, create_time)
+        values (#{userId},#{entityType},#{entityId},#{targetId},#{content},#{status},#{createTime});
+    </insert>
+</mapper>
