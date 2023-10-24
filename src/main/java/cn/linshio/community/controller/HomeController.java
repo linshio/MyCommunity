@@ -47,4 +47,11 @@ public class HomeController {
         model.addAttribute("discussPosts",discussPosts);
         return "index";
     }
+
+    //处理异常的方法
+    @GetMapping("/error")
+    public String getErrorPage(){
+        return "/error/500";
+    }
+
 }

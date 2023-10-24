@@ -9,7 +9,6 @@ import cn.linshio.community.util.CommunityUtil;
 import cn.linshio.community.util.MailClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
@@ -53,6 +52,11 @@ public class UserService implements CommunityConstant {
         return loginTicketMapper.selectLoginTicketByTicket(ticket);
     }
 
+
+    //根据用户名查询用户
+    public User selectUserByName(String username){
+        return userMapper.selectUserByName(username);
+    }
 
     /**
      * 用户注册
@@ -195,5 +199,7 @@ public class UserService implements CommunityConstant {
     public int updateHeaderUrl(int userId,String headerUrl){
         return userMapper.updateUserHeadUrl(userId,headerUrl);
     }
+
+
 
 }

@@ -1,9 +1,11 @@
 import cn.linshio.community.MainApplication;
 import cn.linshio.community.dao.DiscussPostMapper;
 import cn.linshio.community.dao.LoginTicketMapper;
+import cn.linshio.community.dao.MessageMapper;
 import cn.linshio.community.dao.UserMapper;
 import cn.linshio.community.entity.DiscussPost;
 import cn.linshio.community.entity.LoginTicket;
+import cn.linshio.community.entity.Message;
 import cn.linshio.community.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -31,6 +33,9 @@ public class MapperTests {
 
     @Resource
     private LoginTicketMapper loginTicketMapper;
+
+    @Resource
+    private MessageMapper messageMapper;
 
     @Test
     public void testSelectPost(){
@@ -70,5 +75,22 @@ public class MapperTests {
         loginTicketMapper.updateTicketStatus("az",1);
         LoginTicket loginTicket = loginTicketMapper.selectLoginTicketByTicket("az");
         log.info(loginTicket.toString());
+    }
+
+    @Test
+    public void testMessageMapper(){
+        List<Message> messages = messageMapper.selectConversations(111, 0, 20);
+        for (Message message : messages) {
+            System.out.println(message);
+        }
+        System.out.println(messageMapper.selectConversationsCount(111));//14
+
+        for (Message letter : messageMapper.selectLetters("111_112", 0, 20)) {
+            System.out.println(letter);
+        }
+        System.out.println(messageMapper.selectLettersCount("111_112"));
+        System.out.println(messageMapper.selectLettersUnread(111, null));
+        System.out.println(messageMapper.selectLettersUnread(111, "111_131"));
+
     }
 }
