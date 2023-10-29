@@ -2,12 +2,16 @@ package cn.linshio.community.controller;
 
 import cn.linshio.community.annotation.LoginRequired;
 import cn.linshio.community.entity.User;
+import cn.linshio.community.service.FollowService;
+import cn.linshio.community.service.LikeService;
 import cn.linshio.community.service.UserService;
+import cn.linshio.community.util.CommunityConstant;
 import cn.linshio.community.util.CommunityUtil;
 import cn.linshio.community.util.HostHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +31,7 @@ import java.io.OutputStream;
 @Controller
 @Slf4j
 @RequestMapping("/user")
-public class UserController {
+public class UserController implements CommunityConstant {
 
     @Value("${community.path.domain}")
     private String domain;
@@ -43,6 +47,12 @@ public class UserController {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private LikeService likeService;
+
+    @Resource
+    private FollowService followService;
 
     /**
      * 访问用户设置页面
@@ -129,5 +139,33 @@ public class UserController {
     // todo：修改密码功能
     //1、在账号设置页面，填写原密码以及新密码，点击保存时将数据提交给服务器。@LoginRequired
     //2、服务器检查原密码是否正确，若正确则将密码修改为新密码，并重定向到退出功能，强制用户重新登录。若错误则返回到账号设置页面，给与相应提示。
+
+
+    //个人主页数据
+    @GetMapping("/profile/{userId}")
+    public String getProfilePage(@PathVariable("userId") int userId,Model model){
+        User user = userService.selectUserById(userId);
+        if (user == null){
+            throw new RuntimeException("该用户不存在");
+        }
+        model.addAttribute("user",user);
+        //点赞的数量
+        int likeCount = likeService.findUserLikeCount(userId);
+        model.addAttribute("likeCount",likeCount);
+        //关注数量
+        long followeeCount = followService.findFolloweeCount(userId, ENTITY_TYPE_USER);
+        model.addAttribute("followeeCount",followeeCount);
+        //粉丝数量
+        long followerCount = followService.findFollowerCount(ENTITY_TYPE_USER, userId);
+        model.addAttribute("followerCount",followerCount);
+        //是否已经关注
+        boolean hasFollowed = false;
+        //要登录才能显示是否关注
+        if (hostHolder.getUser()!=null){
+            hasFollowed = followService.hasFollowed(hostHolder.getUser().getId(),ENTITY_TYPE_USER,userId);
+        }
+        model.addAttribute("hasFollowed",hasFollowed);
+        return "site/profile";
+    }
 
 }

@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 @Mapper
+@Deprecated//标记已弃用
 public interface LoginTicketMapper {
     //插入一条登录凭证
     int insertLoginTicket(LoginTicket loginTicket);

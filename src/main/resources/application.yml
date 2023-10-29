@@ -5,6 +5,11 @@ server:
 
 # 数据源的配置
 spring:
+  redis:
+    database: 0
+    host: 60.204.128.243
+    port: 6379
+    password: Lsp1314520
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://60.204.128.243:3306/community?characterEncoding=utf-8&useSSL=false&serverTimezone=Hongkong
