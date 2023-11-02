@@ -35,4 +35,10 @@
         insert into comment (user_id, entity_type, entity_id, target_id, content, status, create_time)
         values (#{userId},#{entityType},#{entityId},#{targetId},#{content},#{status},#{createTime});
     </insert>
+
+    <select id="selectCommentById" resultMap="comment">
+        select *
+        from comment
+        where id = #{id};
+    </select>
 </mapper>

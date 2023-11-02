@@ -140,7 +140,6 @@ public class UserController implements CommunityConstant {
     //1、在账号设置页面，填写原密码以及新密码，点击保存时将数据提交给服务器。@LoginRequired
     //2、服务器检查原密码是否正确，若正确则将密码修改为新密码，并重定向到退出功能，强制用户重新登录。若错误则返回到账号设置页面，给与相应提示。
 
-
     //个人主页数据
     @GetMapping("/profile/{userId}")
     public String getProfilePage(@PathVariable("userId") int userId,Model model){

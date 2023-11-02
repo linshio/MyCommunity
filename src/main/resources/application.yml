@@ -10,6 +10,15 @@ spring:
     host: 60.204.128.243
     port: 6379
     password: Lsp1314520
+  data.elasticsearch:
+    cluster-name: elasticsearch
+    cluster-nodes: 60.204.128.243:9300
+  kafka:
+    bootstrap-servers: 60.204.128.243:9092
+    consumer:
+      group-id: community-consumer-group
+      enable-auto-commit: true
+      auto-commit-interval: 3000
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://60.204.128.243:3306/community?characterEncoding=utf-8&useSSL=false&serverTimezone=Hongkong

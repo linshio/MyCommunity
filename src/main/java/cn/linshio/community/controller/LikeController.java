@@ -1,7 +1,10 @@
 package cn.linshio.community.controller;
 
+import cn.linshio.community.entity.Event;
 import cn.linshio.community.entity.User;
+import cn.linshio.community.event.EventProducer;
 import cn.linshio.community.service.LikeService;
+import cn.linshio.community.util.CommunityConstant;
 import cn.linshio.community.util.CommunityUtil;
 import cn.linshio.community.util.HostHolder;
 import org.springframework.stereotype.Controller;
@@ -13,7 +16,7 @@ import java.util.HashMap;
 
 //处理点赞
 @Controller
-public class LikeController {
+public class LikeController implements CommunityConstant {
 
     @Resource
     private LikeService likeService;
@@ -21,9 +24,12 @@ public class LikeController {
     @Resource
     private HostHolder hostHolder;
 
+    @Resource
+    private EventProducer eventProducer;
+
     @PostMapping("/like")
     @ResponseBody
-    public String like(int entityType,int entityId,int entityUserId){
+    public String like(int entityType,int entityId,int entityUserId,int postId){
         //后期会统一处理权限问题
         User user = hostHolder.getUser();
         //点赞
@@ -36,6 +42,19 @@ public class LikeController {
         HashMap<String, Object> map = new HashMap<>();
         map.put("likeCount",entityLikeCount);
         map.put("likeStatus",entityLikeStatus);
+
+        //触发点赞事件
+        if (entityLikeStatus==1){
+            Event event = new Event()
+                    .setTopic(TOPIC_LIKE)
+                    .setEntityType(entityType)
+                    .setEntityId(entityId)
+                    .setUserId(hostHolder.getUser().getId())
+                    .setEntityUserId(entityUserId)
+                    .setData("postId",postId);
+            eventProducer.findEvent(event);
+        }
+
         return CommunityUtil.getJSONString(200,null,map);
     }
 }

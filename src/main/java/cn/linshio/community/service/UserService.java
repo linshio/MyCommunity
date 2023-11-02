@@ -232,6 +232,10 @@ public class UserService implements CommunityConstant {
         redisTemplate.opsForValue().set(userKey,user,3600, TimeUnit.SECONDS);
         return user;
     }
+
+    /**
+     * @param userId
+     */
     //当数据进行变更的时候就清楚缓存的数据
     private void clearCacheUser(int userId){
         String userKey = RedisKeyUtil.getUserKey(userId);

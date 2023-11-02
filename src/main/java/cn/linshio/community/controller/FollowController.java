@@ -1,7 +1,9 @@
 package cn.linshio.community.controller;
 
+import cn.linshio.community.entity.Event;
 import cn.linshio.community.entity.Page;
 import cn.linshio.community.entity.User;
+import cn.linshio.community.event.EventProducer;
 import cn.linshio.community.service.FollowService;
 import cn.linshio.community.service.UserService;
 import cn.linshio.community.util.CommunityConstant;
@@ -30,11 +32,23 @@ public class FollowController implements CommunityConstant {
     @Resource
     private UserService userService;
 
+    @Resource
+    private EventProducer eventProducer;
+
     @PostMapping("/follow")
     @ResponseBody
     public String follow(int entityType,int entityId){
         User user = hostHolder.getUser();
         followService.follow(user.getId(),entityType,entityId);
+        //触发关注的事件
+        Event event = new Event()
+                .setUserId(hostHolder.getUser().getId())
+                .setTopic(TOPIC_FOLLOW)
+                .setEntityType(entityType)
+                .setEntityId(entityId)
+                .setEntityUserId(entityId);
+        eventProducer.findEvent(event);
+
         return CommunityUtil.getJSONString(200,"已关注");
     }
 

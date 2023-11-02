@@ -1,9 +1,7 @@
 package cn.linshio.community.controller;
 
-import cn.linshio.community.entity.Comment;
-import cn.linshio.community.entity.DiscussPost;
-import cn.linshio.community.entity.Page;
-import cn.linshio.community.entity.User;
+import cn.linshio.community.entity.*;
+import cn.linshio.community.event.EventProducer;
 import cn.linshio.community.service.CommentService;
 import cn.linshio.community.service.DiscussPostService;
 import cn.linshio.community.service.LikeService;
@@ -37,6 +35,9 @@ public class DiscussPostController implements CommunityConstant {
     @Resource
     private LikeService likeService;
 
+    @Resource
+    private EventProducer eventProducer;
+
     /**
      * 添加一条帖子
      * @param title     帖子的标题
@@ -60,6 +61,15 @@ public class DiscussPostController implements CommunityConstant {
         discussPost.setType(0);
         discussPost.setCreateTime(new Date());
         discussPostService.addDiscussPost(discussPost);
+
+        //触发发帖的事件 目的是给到es中
+        Event event = new Event()
+                .setTopic(TOPIC_PUBLISH)
+                .setUserId(user.getId())
+                .setEntityType(ENTITY_TYPE_POST)
+                .setEntityId(discussPost.getId());
+        eventProducer.findEvent(event);
+
         return CommunityUtil.getJSONString(200,"帖子发布成功");
     }
 

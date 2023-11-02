@@ -13,7 +13,7 @@ import org.springframework.web.util.HtmlUtils;
 import javax.annotation.Resource;
 import java.util.List;
 
-//Comment业务类
+//Comment评论业务类
 @Service
 public class CommentService implements CommunityConstant {
 
@@ -32,6 +32,10 @@ public class CommentService implements CommunityConstant {
 
     public int findCommentCount(int entityId,int entityType){
         return  commentMapper.selectCommentCount(entityId,entityType);
+    }
+
+    public Comment findCommentById(int id){
+        return commentMapper.selectCommentById(id);
     }
 
     /**
