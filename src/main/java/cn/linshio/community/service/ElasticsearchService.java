@@ -43,8 +43,8 @@ public class ElasticsearchService {
     }
 
     //删除帖子
-    public void deleteDiscussPost(DiscussPost discussPost){
-        repository.delete(discussPost);
+    public void deleteDiscussPost(int id) {
+        repository.deleteById(id);
     }
 
     /**

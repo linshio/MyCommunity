@@ -65,4 +65,11 @@ public class HomeController implements CommunityConstant {
         return "/error/500";
     }
 
+    //处理权限不足的方法
+    @GetMapping("/denied")
+    public String getDeniedPage(){
+        //todo 这里可以将权限不足的页面进行替换
+        return "/error/404";
+    }
+
 }

@@ -30,6 +30,18 @@
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
+        <!--thymeleaf+security-->
+        <dependency>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-springsecurity5</artifactId>
+        </dependency>
+
+        <!--security-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
         <!--springboot 整合elasticSearch-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

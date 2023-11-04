@@ -1,5 +1,6 @@
 package cn.linshio.community.config;
 
+import cn.linshio.community.controller.interceptor.DataInterceptor;
 import cn.linshio.community.controller.interceptor.LoginRequiredInterceptor;
 import cn.linshio.community.controller.interceptor.LoginTicketInterceptor;
 import cn.linshio.community.controller.interceptor.MessageInterceptor;
@@ -16,11 +17,14 @@ public class WebMveConfig implements WebMvcConfigurer {
     @Resource
     private LoginTicketInterceptor loginTicketInterceptor;
 
-    @Resource
-    private LoginRequiredInterceptor loginRequiredInterceptor;
+//    @Resource
+//    private LoginRequiredInterceptor loginRequiredInterceptor;
 
     @Resource
     private MessageInterceptor messageInterceptor;
+
+    @Resource
+    private DataInterceptor dataInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -28,12 +32,17 @@ public class WebMveConfig implements WebMvcConfigurer {
         registry.addInterceptor(loginTicketInterceptor)
                 .excludePathPatterns("/**/*.css","/**/*.js","/**/*.png","/**/*.jpg","/**/*.jpeg");
 
-        //添加用户未登录的拦截器
-        registry.addInterceptor(loginRequiredInterceptor)
-                .excludePathPatterns("/**/*.css","/**/*.js","/**/*.png","/**/*.jpg","/**/*.jpeg");
+//        //添加用户未登录的拦截器
+//        registry.addInterceptor(loginRequiredInterceptor)
+//                .excludePathPatterns("/**/*.css","/**/*.js","/**/*.png","/**/*.jpg","/**/*.jpeg");
 
         //使用拦截器实现总消息未读数量
         registry.addInterceptor(messageInterceptor)
                 .excludePathPatterns("/**/*.css","/**/*.js","/**/*.png","/**/*.jpg","/**/*.jpeg");
+        //使用拦截器记录用户量（UV）
+        registry.addInterceptor(dataInterceptor)
+               .excludePathPatterns("/**/*.css","/**/*.js","/**/*.png","/**/*.jpg","/**/*.jpeg");
     }
+
+
 }

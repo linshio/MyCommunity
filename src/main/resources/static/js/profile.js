@@ -14,7 +14,7 @@ function follow() {
 				if (data.code==200){
 					window.location.reload();
 				}else {
-					alert(data.msg);
+					alert(data.message);
 				}
 			}
 		)
@@ -29,7 +29,7 @@ function follow() {
 				if (data.code==200){
 					window.location.reload();
 				}else {
-					alert(data.msg);
+					alert(data.message);
 				}
 			}
 		)
