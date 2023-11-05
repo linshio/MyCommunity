@@ -76,14 +76,11 @@ public class DataService {
         }
 
         //进行or运算
-        return (long) redisTemplate.execute(new RedisCallback<Long>() {
-            @Override
-            public Long doInRedis(RedisConnection redisConnection) throws DataAccessException {
-                String redisKey = RedisKeyUtil.getDAUKey(dateFormat.format(startDate), dateFormat.format(endDate));
-                redisConnection.bitOp(RedisStringCommands.BitOperation.OR,
-                        redisKey.getBytes(),keyList.toArray(new byte[0][0]));
-                return redisConnection.bitCount(redisKey.getBytes());
-            }
+        return (long) redisTemplate.execute((RedisCallback<Long>) redisConnection -> {
+            String redisKey = RedisKeyUtil.getDAUKey(dateFormat.format(startDate), dateFormat.format(endDate));
+            redisConnection.bitOp(RedisStringCommands.BitOperation.OR,
+                    redisKey.getBytes(),keyList.toArray(new byte[0][0]));
+            return redisConnection.bitCount(redisKey.getBytes());
         });
     }
 

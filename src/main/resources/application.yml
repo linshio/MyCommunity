@@ -29,6 +29,32 @@ spring:
       maximum-pool-size: 15
       minimum-idle: 5
       idle-timeout: 30000
+  #quartz线程池的配置
+  quartz:
+    job-store-type: jdbc
+    scheduler-name: communityScheduler
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceId: AUTO
+          jobStore:
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: 5
+  # spring 线程池
+  task:
+    execution:
+      pool:
+        core-size: 5
+        max-size: 10
+        # 队列容量
+        queue-capacity: 100
+    scheduling:
+      pool:
+        size: 5
 
   # 邮箱配置
   mail:

@@ -8,7 +8,9 @@ import cn.linshio.community.service.CommentService;
 import cn.linshio.community.service.DiscussPostService;
 import cn.linshio.community.util.CommunityConstant;
 import cn.linshio.community.util.HostHolder;
+import cn.linshio.community.util.RedisKeyUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,6 +34,9 @@ public class CommentController implements CommunityConstant {
 
     @Resource
     private DiscussPostService discussPostService;
+
+    @Resource
+    private RedisTemplate redisTemplate;
 
     @PostMapping("/add/{discussPostId}")
     public String addComment(@PathVariable("discussPostId") int discussPostId, Comment comment){
@@ -70,6 +75,9 @@ public class CommentController implements CommunityConstant {
                     .setEntityType(ENTITY_TYPE_POST)
                     .setEntityId(discussPostId);
             eventProducer.findEvent(event);
+            //计算帖子的分数
+            String redisKey = RedisKeyUtil.getPostScoreKey();
+            redisTemplate.opsForSet().add(redisKey,discussPostId);
         }
 
         return "redirect:/discuss/detail/"+discussPostId;

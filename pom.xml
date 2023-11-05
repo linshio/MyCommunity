@@ -30,6 +30,12 @@
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
+        <!--quartz多线程调度-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-quartz</artifactId>
+        </dependency>
+
         <!--thymeleaf+security-->
         <dependency>
             <groupId>org.thymeleaf.extras</groupId>

@@ -12,7 +12,8 @@ public interface DiscussPostMapper {
     //查询所有记录并 分页
     List<DiscussPost> selectDiscussPosts(@Param("userId") int userId,
                                          @Param("offset") int offset,
-                                         @Param("limit") int limit);
+                                         @Param("limit") int limit,
+                                         @Param("orderMode") int orderMode);
 
     //根据userId查询 该用户的帖子条数
     int selectDiscussPostRows(@Param("userId") int userId);
@@ -32,5 +33,8 @@ public interface DiscussPostMapper {
 
     //更新帖子的状态
     int updateStatus(@Param("id") int id,@Param("status") int status);
+
+    //更新帖子的方法
+    int updateScore(@Param("id") int id,@Param("score") double score);
 
 }

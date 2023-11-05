@@ -9,6 +9,8 @@ import cn.linshio.community.service.UserService;
 import cn.linshio.community.util.CommunityConstant;
 import cn.linshio.community.util.CommunityUtil;
 import cn.linshio.community.util.HostHolder;
+import cn.linshio.community.util.RedisKeyUtil;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +39,9 @@ public class DiscussPostController implements CommunityConstant {
 
     @Resource
     private EventProducer eventProducer;
+
+    @Resource
+    private RedisTemplate redisTemplate;
 
     /**
      * 添加一条帖子
@@ -69,6 +74,10 @@ public class DiscussPostController implements CommunityConstant {
                 .setEntityType(ENTITY_TYPE_POST)
                 .setEntityId(discussPost.getId());
         eventProducer.findEvent(event);
+
+        //计算帖子的分数
+        String redisKey = RedisKeyUtil.getPostScoreKey();
+        redisTemplate.opsForSet().add(redisKey,discussPost.getId());
 
         return CommunityUtil.getJSONString(200,"帖子发布成功");
     }
@@ -191,6 +200,10 @@ public class DiscussPostController implements CommunityConstant {
                 .setEntityType(ENTITY_TYPE_POST)
                 .setEntityId(id);
         eventProducer.findEvent(event);
+
+        //计算帖子的分数
+        String redisKey = RedisKeyUtil.getPostScoreKey();
+        redisTemplate.opsForSet().add(redisKey,id);
 
         return CommunityUtil.getJSONString(200,"帖子加精成功");
     }
