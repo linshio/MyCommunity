@@ -8,16 +8,15 @@ import cn.linshio.community.service.UserService;
 import cn.linshio.community.util.CommunityConstant;
 import cn.linshio.community.util.CommunityUtil;
 import cn.linshio.community.util.HostHolder;
+import com.qiniu.util.Auth;
+import com.qiniu.util.StringMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -54,24 +53,62 @@ public class UserController implements CommunityConstant {
     @Resource
     private FollowService followService;
 
+    @Value("${qiniu.key.access}")
+    private String accessKey;
+
+    @Value("${qiniu.key.secret}")
+    private String secretKey;
+
+    @Value("${qiniu.bucker.header.name}")
+    private String headerBucketName;
+
+    @Value("${qiniu.bucker.header.url}")
+    private String headerBucketUrl;
+
     /**
      * 访问用户设置页面
      * @return
      */
     @LoginRequired
     @GetMapping("/setting")
-    public String getSettings(){
+    public String getSettings(Model model){
+        //上传文件的名称
+        String fileName = CommunityUtil.getRandomUUID();
+        //设置响应的信息
+        StringMap policy = new StringMap();
+        policy.put("returnBody",CommunityUtil.getJSONString(200));
+        //生成上传的凭证
+        Auth auth = Auth.create(accessKey, secretKey);
+        String uploadToken = auth.uploadToken(headerBucketName, fileName, 3600, policy);
+
+        model.addAttribute("uploadToken", uploadToken);
+        model.addAttribute("fileName", fileName);
+
         return "/site/setting";
+    }
+
+    //更新数据库中的头像的路径
+    @PostMapping("/header/url")
+    @ResponseBody
+    public String updateHeaderUrl(String fileName){
+        if (StringUtils.isBlank(fileName)){
+            return CommunityUtil.getJSONString(500,"文件名不能为空");
+        }
+        //获取头像的url
+        String url = headerBucketUrl + "/" + fileName;
+        userService.updateHeaderUrl(hostHolder.getUser().getId(), url);
+        return CommunityUtil.getJSONString(200,"头像路径更新成功");
     }
 
 
     /**
-     *  修改用户头像
+     *  修改用户头像(废弃)
      * @param headerImage  文件上传下载对象
      * @param model 视图控制对象
      * @return
      */
     @LoginRequired
+    @Deprecated
     @PostMapping("/upload")
     public String uploadHeaderImg(MultipartFile headerImage, Model model){
         // 判空
@@ -107,11 +144,12 @@ public class UserController implements CommunityConstant {
     }
 
     /**
-     * 向浏览器响应图片
+     * 向浏览器响应图片(废弃)
      * @param filename  文件名
      * @param response 响应对象
      */
     @GetMapping("/header/{filename}")
+    @Deprecated
     public void getHeader(@PathVariable("filename") String filename, HttpServletResponse response){
         //服务器存放的文件路径
         filename = uploadPath +"/"+ filename;

@@ -90,3 +90,21 @@ community:
     domain: http://localhost:8080
     # 文件上传的路径
     upload: /Users/linshio/Project/EustiaJava/community/src/main/resources/userHeaderImg
+
+# 七牛云配置密钥
+qiniu:
+  key:
+    access: X7ytXkYFysYUabhNJl38AsAnuwhnG7lMXE_jAJlE
+    secret: uy2S3wrijzWVgfUqNFymFuqhJ4DwnJpL7B8QQuXA
+  bucker:
+    header:
+      name: linshio-community-headers
+      # 这个域名过三十天就会失效  today is 2023/11/6
+      url: http://s3ofz4uvl.hn-bkt.clouddn.com
+# 自定义本地缓存 caffeine
+caffeine:
+  posts:
+    # 缓存数据量
+    max-posts: 15
+    # 缓存过期时间
+    expire-seconds: 180

@@ -30,6 +30,19 @@
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
+        <!--七牛云对象存储-->
+        <dependency>
+            <groupId>com.qiniu</groupId>
+            <artifactId>qiniu-java-sdk</artifactId>
+            <version>7.2.23</version>
+        </dependency>
+
+        <!--本地缓存工具-->
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+        </dependency>
+
         <!--quartz多线程调度-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
