@@ -1,10 +1,11 @@
 package cn.linshio.community.controller;
 
 import cn.linshio.community.annotation.LoginRequired;
+import cn.linshio.community.entity.DiscussPost;
+import cn.linshio.community.entity.Page;
+import cn.linshio.community.entity.ReplayData;
 import cn.linshio.community.entity.User;
-import cn.linshio.community.service.FollowService;
-import cn.linshio.community.service.LikeService;
-import cn.linshio.community.service.UserService;
+import cn.linshio.community.service.*;
 import cn.linshio.community.util.CommunityConstant;
 import cn.linshio.community.util.CommunityUtil;
 import cn.linshio.community.util.HostHolder;
@@ -13,6 +14,7 @@ import com.qiniu.util.StringMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +28,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @Slf4j
@@ -45,10 +51,15 @@ public class UserController implements CommunityConstant {
     private HostHolder hostHolder;
 
     @Resource
+    private DiscussPostService discussPostService;
+    @Resource
     private UserService userService;
 
     @Resource
     private LikeService likeService;
+
+    @Resource
+    private CommentService commentService;
 
     @Resource
     private FollowService followService;
@@ -174,9 +185,19 @@ public class UserController implements CommunityConstant {
         }
     }
 
-    // todo：修改密码功能
-    //1、在账号设置页面，填写原密码以及新密码，点击保存时将数据提交给服务器。@LoginRequired
-    //2、服务器检查原密码是否正确，若正确则将密码修改为新密码，并重定向到退出功能，强制用户重新登录。若错误则返回到账号设置页面，给与相应提示。
+    // 修改密码
+    @PostMapping("/updatePassword")
+    public String updatePassword(String oldPassword, String newPassword, Model model) {
+        User user = hostHolder.getUser();
+        Map<String, Object> map = userService.updatePassword(user.getId(), oldPassword, newPassword);
+        if (map == null || map.isEmpty()) {
+            return "redirect:/logout";
+        } else {
+            model.addAttribute("oldPasswordMsg", map.get("oldPasswordMsg"));
+            model.addAttribute("newPasswordMsg", map.get("newPasswordMsg"));
+            return "/site/setting";
+        }
+    }
 
     //个人主页数据
     @GetMapping("/profile/{userId}")
@@ -205,4 +226,64 @@ public class UserController implements CommunityConstant {
         return "site/profile";
     }
 
+    //我的帖子
+    @GetMapping("/myPost")
+    public String getMyPostsPage(Model model, Page page){
+        User user = hostHolder.getUser();
+        if (user==null){
+            return "redirect:/login";
+        }
+        int rows = discussPostService.selectDiscussPostRows(user.getId());
+        //评论的分页信息
+        page.setLimit(5);
+        page.setPath("/user/myPost");
+        page.setRows(rows);
+        //查询评论
+        List<DiscussPost> userDiscussPosts = discussPostService.selectDiscussPostsByUserId(user.getId(), page.getCurrentOffset(), page.getLimit());
+        List<Map<String,Object>> userDiscussPostMaps = new ArrayList<>();
+        if (userDiscussPosts!=null && !userDiscussPosts.isEmpty()){
+            for (DiscussPost userDiscussPost : userDiscussPosts) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("userPost",userDiscussPost);
+                //点赞数
+                long likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_POST, userDiscussPost.getId());
+                map.put("likeCount",likeCount);
+                userDiscussPostMaps.add(map);
+            }
+        }
+        //帖子总数
+        model.addAttribute("rows",rows);
+        model.addAttribute("user",user);
+        model.addAttribute("userPosts",userDiscussPostMaps);
+        return "/site/my-post";
+    }
+
+    //我的回复
+    @GetMapping("/myReply")
+    public String getMyReplyPage(Model model, Page page){
+        User user = hostHolder.getUser();
+        if (user==null){
+            return "redirect:/login";
+        }
+        //回复的帖子总条数
+        int rows = commentService.findCommentUserRows(user.getId());
+        //评论的分页信息
+        page.setLimit(5);
+        page.setPath("/user/myReply");
+        page.setRows(rows);
+        //查询回复
+        List<ReplayData> userReplays = commentService.findCommentByUser(user.getId(), page.getCurrentOffset(), page.getLimit());
+        List<Map<String,Object>> userReplayMaps = new ArrayList<>();
+        if (userReplays!=null && !userReplays.isEmpty()){
+            for (ReplayData userReplay : userReplays) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("replay",userReplay);
+                userReplayMaps.add(map);
+            }
+        }
+        model.addAttribute("user",user);
+        model.addAttribute("userReplay",userReplayMaps);
+        model.addAttribute("rows",rows);
+        return "/site/my-reply";
+    }
 }

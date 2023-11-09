@@ -35,6 +35,12 @@ public class HomeController implements CommunityConstant {
     @Resource
     private LikeService likeService;
 
+    //部署做的转发处理
+    @GetMapping("/")
+    public String root(){
+        return "forward:/index";
+    }
+
     @GetMapping("/index")
     public String getIndexPage(Model model, Page page,
                                @RequestParam(name = "orderMode",defaultValue = "0") int orderMode){
@@ -66,14 +72,12 @@ public class HomeController implements CommunityConstant {
     //处理异常的方法
     @GetMapping("/error")
     public String getErrorPage(){
-        //todo 替换掉报错页面
         return "/error/500";
     }
 
     //处理权限不足的方法
     @GetMapping("/denied")
     public String getDeniedPage(){
-        //todo 这里可以将权限不足的页面进行替换
         return "/error/404";
     }
 

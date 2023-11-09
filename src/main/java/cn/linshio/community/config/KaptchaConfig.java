@@ -10,8 +10,6 @@ import java.util.Properties;
 //验证码小工具的配置类
 @Configuration
 public class KaptchaConfig {
-
-    //todo : 优化该配置，将配置整合到配置文件中
     @Bean
     public Producer kaptchaProducer(){
 

@@ -225,5 +225,4 @@ public class DiscussPostController implements CommunityConstant {
         return CommunityUtil.getJSONString(200,"帖子删除成功");
     }
 
-
 }

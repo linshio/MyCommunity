@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -66,6 +67,10 @@ public class MessageService {
     public int readMessage(List<Integer> ids){
         //1-状态已读 0-状态未读
         return messageMapper.updateStatus(ids,1);
+    }
+
+    public int deleteMessage(int id) {
+        return messageMapper.updateStatus(Arrays.asList(id), 2);
     }
 
 }

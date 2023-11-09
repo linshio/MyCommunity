@@ -18,6 +18,10 @@ public interface DiscussPostMapper {
     //根据userId查询 该用户的帖子条数
     int selectDiscussPostRows(@Param("userId") int userId);
 
+    //根据userId查询 该用户的帖子
+    List<DiscussPost> selectDiscussPostsByUserId(@Param("userId") int userId,
+                                                 @Param("offset") int offset,
+                                                 @Param("limit") int limit);
 
     //插入帖子
     int insertDiscussPost(DiscussPost discussPost);

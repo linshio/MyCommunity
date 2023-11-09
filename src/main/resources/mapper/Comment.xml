@@ -12,6 +12,9 @@
         <result column="entity_id" property="entityId"/>
         <result column="create_time" property="createTime"/>
     </resultMap>
+    <resultMap id="reply" type="cn.linshio.community.entity.ReplayData">
+        <result column="create_time" property="createTime"/>
+    </resultMap>
 
     <select id="selectCommentByEntity" resultMap="comment">
         select *
@@ -40,5 +43,20 @@
         select *
         from comment
         where id = #{id};
+    </select>
+
+    <select id="selectCommentByUser" resultMap="reply">
+        select `discuss_post`.id,`discuss_post`.`title`,`comment`.`content`,`comment`.`create_time` from `comment`,`discuss_post`
+        where
+            `comment`.`entity_id` = `discuss_post`.id
+          and `comment`.`user_id` = #{userId} and `comment`.`entity_type` = 1 and `comment`.`status` = 0
+        LIMIT #{offset},#{limit}
+    </select>
+
+    <select id="selectCommentCountByUser" resultType="int">
+        select count(*) from `comment`,`discuss_post`
+        where
+            `comment`.`entity_id` = `discuss_post`.id
+          and `comment`.`user_id` = #{userId} and `comment`.`entity_type` = 1 and `comment`.`status` = 0
     </select>
 </mapper>

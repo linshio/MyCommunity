@@ -4,6 +4,7 @@ import cn.linshio.community.entity.User;
 import cn.linshio.community.service.UserService;
 import cn.linshio.community.util.CommunityConstant;
 import cn.linshio.community.util.CommunityUtil;
+import cn.linshio.community.util.MailClient;
 import cn.linshio.community.util.RedisKeyUtil;
 import com.google.code.kaptcha.Producer;
 import lombok.extern.slf4j.Slf4j;
@@ -15,10 +16,9 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
@@ -46,6 +46,12 @@ public class LoginController implements CommunityConstant {
 
     @Value("${server.servlet.context-path}")
     private String contextPath;
+
+    @Autowired
+    private MailClient mailClient;
+
+    @Autowired
+    private TemplateEngine templateEngine;
 
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
@@ -181,13 +187,52 @@ public class LoginController implements CommunityConstant {
         return "redirect:/login";
     }
 
-    //todo：开发忘记密码的功能：
-    //
-    //- 点击登录页面上的“忘记密码”链接，打开忘记密码页面。
-    //
-    //- 在表单中输入注册的邮箱，点击获取验证码按钮，服务器为该邮箱发送一份验证码。
-    //
-    //- 在表单中填写收到的验证码及新密码，点击重置密码，服务器对密码进行修改。
+    //忘记密码页面
+    @GetMapping("/forget")
+    public String forgetPage(){
+        return "/site/forget";
+    }
 
+    // 获取验证码
+    @PostMapping("/forget/code")
+    @ResponseBody
+    public String getForgetCode(String email, HttpSession session) {
+        if (StringUtils.isBlank(email)) {
+            return CommunityUtil.getJSONString(0, "邮箱不能为空！");
+        }
+
+        // 发送邮件
+        Context context = new Context();
+        context.setVariable("email", email);
+        String code = CommunityUtil.getRandomUUID().substring(0, 4);
+        context.setVariable("verifyCode", code);
+        String content = templateEngine.process("/mail/forget", context);
+        mailClient.sendMail(email, "找回密码", content);
+
+        // 保存验证码
+        session.setAttribute("verifyCode", code);
+
+        return CommunityUtil.getJSONString(200,"验证码发送成功");
+    }
+
+    // 重置密码
+    @PostMapping("/forget/password")
+    public String resetPassword(String email, String verifyCode, String password, Model model, HttpSession session) {
+        String code = (String) session.getAttribute("verifyCode");
+        if (StringUtils.isBlank(verifyCode) || StringUtils.isBlank(code) || !code.equalsIgnoreCase(verifyCode)) {
+            model.addAttribute("codeMsg", "验证码错误!");
+            model.addAttribute("userEmail", email);
+            return "/site/forget";
+        }
+
+        Map<String, Object> map = userService.resetPassword(email, password);
+        if (map.containsKey("user")) {
+            return "redirect:/login";
+        } else {
+            model.addAttribute("emailMsg", map.get("emailMsg"));
+            model.addAttribute("passwordMsg", map.get("passwordMsg"));
+            return "/site/forget";
+        }
+    }
 }
 

@@ -73,4 +73,13 @@
         set score = #{score}
         where id = #{id}
     </update>
+
+    <select id="selectDiscussPostsByUserId" resultMap="discussPost">
+        select *
+        from discuss_post
+        where user_id = #{userId}
+        and status != 2
+        order by create_time desc
+        limit #{offset}, #{limit}
+    </select>
 </mapper>

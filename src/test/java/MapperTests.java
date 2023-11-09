@@ -1,12 +1,6 @@
 import cn.linshio.community.MainApplication;
-import cn.linshio.community.dao.DiscussPostMapper;
-import cn.linshio.community.dao.LoginTicketMapper;
-import cn.linshio.community.dao.MessageMapper;
-import cn.linshio.community.dao.UserMapper;
-import cn.linshio.community.entity.DiscussPost;
-import cn.linshio.community.entity.LoginTicket;
-import cn.linshio.community.entity.Message;
-import cn.linshio.community.entity.User;
+import cn.linshio.community.dao.*;
+import cn.linshio.community.entity.*;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +27,9 @@ public class MapperTests {
 
     @Resource
     private LoginTicketMapper loginTicketMapper;
+
+    @Resource
+    private CommentMapper commentMapper;
 
     @Resource
     private MessageMapper messageMapper;
@@ -92,5 +89,10 @@ public class MapperTests {
         System.out.println(messageMapper.selectLettersUnread(111, null));
         System.out.println(messageMapper.selectLettersUnread(111, "111_131"));
 
+    }
+
+    @Test
+    public void testUserDiscussPostMapper(){
+        System.out.println(commentMapper.selectCommentCountByUser(162));
     }
 }

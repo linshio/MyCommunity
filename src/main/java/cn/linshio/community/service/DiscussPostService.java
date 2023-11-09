@@ -79,6 +79,7 @@ public class DiscussPostService {
         return discussPostMapper.selectDiscussPosts(userId, offset, limit,orderMode);
     }
 
+    //根据UserId返回该用户发表的帖子总数
     public int selectDiscussPostRows(int userId){
         if (userId==0){
             return postRowCache.get(userId);
@@ -123,5 +124,10 @@ public class DiscussPostService {
     }
     public int updateScore(int id,double score){
         return discussPostMapper.updateScore(id,score);
+    }
+
+    //查询指定用户发布的帖子
+    public List<DiscussPost> selectDiscussPostsByUserId(int userId,int offset,int limit){
+        return discussPostMapper.selectDiscussPostsByUserId(userId,offset,limit);
     }
 }

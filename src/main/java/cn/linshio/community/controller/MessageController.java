@@ -11,10 +11,7 @@ import cn.linshio.community.util.HostHolder;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.HtmlUtils;
 
 import javax.annotation.Resource;
@@ -66,9 +63,15 @@ public class MessageController implements CommunityConstant{
         model.addAttribute("noticeUnreadCount",unreadNoticeCount);
         return "/site/letter";
     }
-
-    //todo:删除私信内容
-
+    @PostMapping("/letter/delete")
+    @ResponseBody
+    public String deleteLetter(int id) {
+        if (id==0){
+            return CommunityUtil.getJSONString(500,"私信删除失败");
+        }
+        messageService.deleteMessage(id);
+        return CommunityUtil.getJSONString(200,"私信删除成功");
+    }
     //私信的详情页
     @GetMapping("/letter/detail/{conversationId}")
     public String getLetterDetail(@PathVariable("conversationId")String conversationId,

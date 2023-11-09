@@ -2,6 +2,7 @@ package cn.linshio.community.service;
 
 import cn.linshio.community.dao.CommentMapper;
 import cn.linshio.community.entity.Comment;
+import cn.linshio.community.entity.ReplayData;
 import cn.linshio.community.util.CommunityConstant;
 import cn.linshio.community.util.SensitiveFilter;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,16 @@ public class CommentService implements CommunityConstant {
 
     public int findCommentCount(int entityId,int entityType){
         return  commentMapper.selectCommentCount(entityId,entityType);
+    }
+
+    //查询我的回复
+    public List<ReplayData> findCommentByUser(int userId,int offset,int limit){
+        return commentMapper.selectCommentByUser(userId,offset,limit);
+    }
+
+    //查询我的回复条数
+    public int findCommentUserRows(int userId){
+        return commentMapper.selectCommentCountByUser(userId);
     }
 
     public Comment findCommentById(int id){

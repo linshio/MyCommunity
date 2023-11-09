@@ -1,0 +1,124 @@
+server:
+  port: 8080
+  servlet:
+    context-path:
+
+# 数据源的配置
+spring:
+  redis:
+    database: 0
+    host: ${hostname}
+    port: 6379
+    password: ${redisPassword}
+  data.elasticsearch:
+    cluster-name: elasticsearch
+    cluster-nodes: ${hostname}:9300
+  # 解决actuator检查失效
+  elasticsearch:
+    rest:
+      uris: ["http://${hostname}:9200"]
+  kafka:
+    bootstrap-servers: ${hostname}:9092
+    consumer:
+      group-id: community-consumer-group
+      enable-auto-commit: true
+      auto-commit-interval: 3000
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://${hostname}:3306/community?characterEncoding=utf-8&useSSL=false&serverTimezone=Hongkong
+    username: ${mysqlUsername}
+    password: ${mysqlPassword}
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      maximum-pool-size: 15
+      minimum-idle: 5
+      idle-timeout: 30000
+  #quartz线程池的配置
+  quartz:
+    job-store-type: jdbc
+    scheduler-name: communityScheduler
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceId: AUTO
+          jobStore:
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: 5
+  # spring 线程池
+  task:
+    execution:
+      pool:
+        core-size: 5
+        max-size: 10
+        # 队列容量
+        queue-capacity: 100
+    scheduling:
+      pool:
+        size: 5
+
+  # 邮箱配置
+  mail:
+    host: smtp.qq.com
+    port: 465
+    username: ${qqEmailName}
+    password: ${qqAuthorizationCode}
+    protocol: smtps
+    properties:
+      mail-smtp-ssl-enable: true
+  # 关闭thymeleaf缓存 todo:打包上线记得开启
+  thymeleaf:
+    cache: false
+# mybatis 配置
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: cn.linshio.community.entity
+  configuration:
+    use-generated-keys: true
+    map-underscore-to-camel-case: true
+
+# 数据监控
+management:
+  endpoints:
+    web:
+      # 对外暴露的端点
+      exposure:
+        include: "*"
+        exclude: ["info","caches"]
+
+
+# 设置日志级别
+logging:
+  level:
+    cn.linshio.community: debug
+
+
+# 自定义配置内容
+community:
+  path:
+    # 主机域名
+    domain: http://localhost:8080
+    # 文件上传的路径
+    upload: /Users/linshio/Project/EustiaJava/community/src/main/resources/userHeaderImg
+
+# 七牛云配置密钥
+qiniu:
+  key:
+    access: ${access}
+    secret: ${secret}
+  bucker:
+    header:
+      name: linshio-community-headers
+      # 这个域名过三十天就会失效  today is 2023/11/6
+      url: http://s3ofz4uvl.hn-bkt.clouddn.com
+# 自定义本地缓存 caffeine
+caffeine:
+  posts:
+    # 缓存数据量
+    max-posts: 15
+    # 缓存过期时间
+    expire-seconds: 180
+
